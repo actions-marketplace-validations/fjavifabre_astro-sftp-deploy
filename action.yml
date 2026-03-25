@@ -105,15 +105,31 @@ runs:
         cd ${{ inputs.path }}
         $PACKAGE_MANAGER run build
 
-    - name: SFTP Deploy
-      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
-            
+# This step only runs if the protocol IS NOT sftp
+    - name: FTP Deploy
+      if: ${{ inputs.protocol != 'sftp' }}
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.6
       with:
         server: ${{ inputs.server }}
         port: ${{ inputs.port }}
         protocol: ${{ inputs.protocol }}
         username: ${{ inputs.username }}
         password: ${{ inputs.password }}
-        remote_path: ${{ inputs.directory }}
+        server-dir: ${{ inputs.directory }}
         dry-run: ${{ inputs.dry-run }}
+        local-dir: ./dist/
+
+    # This step only runs if the protocol IS sftp
+    - name: SFTP Deploy
+      if: ${{ inputs.protocol == 'sftp' }}
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      with:
+        server: ${{ inputs.server }}
+        port: ${{ inputs.port }}
+        # Note: wlixcc action might not need the 'protocol' input, 
+        # but keeping it if your specific version requires it.
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
+        remote_path: ${{ inputs.directory }}
+        # Note: Check if wlixcc supports 'dry-run'; many SFTP actions do not.
         local-path: ./dist/
