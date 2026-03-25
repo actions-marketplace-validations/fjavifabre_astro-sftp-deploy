@@ -74,12 +74,12 @@ runs:
         fi
     - name: Setup PNPM
       if: ${{ env.PACKAGE_MANAGER == 'pnpm' }}
-      uses: pnpm/action-setup@fc06bc1257f339d1d5d8b3a19a8cae5388b55320 # v5.0.0
+      uses: pnpm/action-setup@v5.0.0
       with:
         version: 10.32.1
 
     - name: Setup Node
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+      uses: actions/setup-node@v6.3.0
       if: inputs.resolve-dep-from-path == true 
       with:
         node-version: ${{ inputs.node-version }}
@@ -87,7 +87,7 @@ runs:
         cache-dependency-path: "${{ inputs.path }}/${{ env.LOCKFILE }}"
 
     - name: Setup Node
-      uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6
+      uses: actions/setup-node@v6.3.0
       if: inputs.resolve-dep-from-path == false 
       with:
         node-version: ${{ inputs.node-version }}
@@ -105,7 +105,7 @@ runs:
         cd ${{ inputs.path }}
         $PACKAGE_MANAGER run build
 
-# This step only runs if the protocol IS NOT sftp
+    # This step only runs if the protocol IS NOT sftp
     - name: FTP Deploy
       if: ${{ inputs.protocol != 'sftp' }}
       uses: SamKirkland/FTP-Deploy-Action@v4.3.6
@@ -122,7 +122,7 @@ runs:
     # This step only runs if the protocol IS sftp
     - name: SFTP Deploy
       if: ${{ inputs.protocol == 'sftp' }}
-      uses: wlixcc/SFTP-Deploy-Action@v1.2.4
+      uses: wlixcc/SFTP-Deploy-Action@v1.2.6
       with:
         server: ${{ inputs.server }}
         port: ${{ inputs.port }}
